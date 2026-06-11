@@ -1,5 +1,5 @@
 .work-section h2 {
-  margin-top: 100px;
+  margin-top: 140px;
   font-size: 70px;
   font-weight: 500;
 }
@@ -84,6 +84,25 @@
 }
 .work-info > p {
   width: 90%;
+}
+.work-live-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accentColor);
+  border: 1px solid var(--accentColor);
+  padding: 6px 14px;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: background 0.25s, color 0.25s;
+  width: fit-content;
+}
+.work-live-link:hover {
+  background: var(--accentColor);
+  color: #000;
 }
 .work-image {
   display: flex;
