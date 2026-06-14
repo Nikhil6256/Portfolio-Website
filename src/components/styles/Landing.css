@@ -103,9 +103,9 @@
   position: absolute;
   max-width: 1920px;
   max-height: 1080px;
-  transform: translateX(-50%);
   width: 100%;
   left: 50%;
+  transform: translateX(-50%);
   z-index: 0;
   bottom: 50px;
   pointer-events: inherit;
@@ -297,6 +297,8 @@ h2.landing-info-h2 {
     bottom: 0;
     z-index: 11;
     position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
   }
   .character-model::after,
   .character-model::before {
