@@ -32,14 +32,15 @@ const Scene = () => {
         antialias: true,
       });
       renderer.setSize(container.width, container.height);
-      renderer.setPixelRatio(window.devicePixelRatio);
+      // Cap pixel ratio at 2 — prevents 3× rendering on high-DPI screens (major lag source)
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1;
       canvasDiv.current.appendChild(renderer.domElement);
 
       const camera = new THREE.PerspectiveCamera(14.5, aspect, 0.1, 1000);
       camera.position.z = 10;
-      camera.position.set(1.8, 13.1, 24.7);
+      camera.position.set(0.8, 13.1, 24.7);
       camera.zoom = 1.1;
       camera.updateProjectionMatrix();
 
@@ -106,8 +107,13 @@ const Scene = () => {
         landingDiv.addEventListener("touchstart", onTouchStart);
         landingDiv.addEventListener("touchend", onTouchEnd);
       }
+      // Stop rendering when character has scrolled well off-screen (performance)
+      const landingSectionHeight = window.innerHeight * 2.5;
+      let rafId: number;
       const animate = () => {
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
+        // Skip expensive GPU render when character is already off-screen
+        if (window.scrollY > landingSectionHeight) return;
         if (headBone) {
           handleHeadRotation(
             headBone,
@@ -127,7 +133,7 @@ const Scene = () => {
       };
       animate();
       return () => {
-        clearTimeout(debounce);
+        cancelAnimationFrame(rafId);
         scene.clear();
         renderer.dispose();
         window.removeEventListener("resize", () =>
