@@ -11,7 +11,7 @@ function splitIntoChars(selector: string): HTMLSpanElement[] {
     .split("")
     .map((c) =>
       c === " "
-        ? " "
+        ? "&nbsp;"
         : `<span class="split-char" style="display:inline-block;">${c}</span>`
     )
     .join("");
@@ -32,7 +32,7 @@ export function initialFX() {
     delay: 1,
   });
 
-  // --- Landing intro text (split once, animate in) ---
+  // ── Landing intro chars (split ONCE, animate in) ──────────────────────
   const landingChars = splitMultipleIntoChars([
     ".landing-info h3",
     ".landing-intro h2",
@@ -52,18 +52,21 @@ export function initialFX() {
     }
   );
 
-  // --- Looping text (split once, used for initial anim + loop) ---
-  // .landing-h2-info = "ML Engineer" (visible first, loops with .landing-h2-info-1)
-  // .landing-h2-info-1 = "Developer"
-  const h2InfoChars = splitIntoChars(".landing-h2-info");
-  const h2Info1Chars = splitIntoChars(".landing-h2-info-1");
+  // ── Looping text (split ONCE each, reuse for loop) ────────────────────
+  //   .landing-h2-info   = first text shown (inside plain h2)
+  //   .landing-h2-info-1 = second text (absolutely positioned on top)
+  //   .landing-h2-1      = first text shown (inside .landing-info-h2)
+  //   .landing-h2-2      = second text (absolutely positioned on top)
 
-  // .landing-h2-1 = "Developer" (visible first, loops with .landing-h2-2)
-  // .landing-h2-2 = "ML Engineer"
-  const h21Chars = splitIntoChars(".landing-h2-1");
-  const h22Chars = splitIntoChars(".landing-h2-2");
+  const h2InfoChars  = splitIntoChars(".landing-h2-info");   // chars1 – visible first
+  const h2Info1Chars = splitIntoChars(".landing-h2-info-1"); // chars2 – starts hidden
+  const h21Chars     = splitIntoChars(".landing-h2-1");       // chars1 – visible first
+  const h22Chars     = splitIntoChars(".landing-h2-2");       // chars2 – starts hidden
 
-  // Animate .landing-h2-info in on load (same as original SplitText behavior)
+  // Immediately hide "second" texts so they don't flash before loop brings them in
+  gsap.set([h2Info1Chars, h22Chars], { opacity: 0, y: 80 });
+
+  // Animate the first visible texts in on load
   gsap.fromTo(
     h2InfoChars,
     { opacity: 0, y: 80, filter: "blur(5px)" },
@@ -101,65 +104,60 @@ export function initialFX() {
     }
   );
 
-  // Start looping animations — using same char arrays (no re-split!)
+  // Start looping — using the SAME char arrays (no re-split)
   LoopText(h2InfoChars, h2Info1Chars);
   LoopText(h21Chars, h22Chars);
 }
 
+/**
+ * Creates an infinite loop that alternates between chars1 (visible first)
+ * and chars2 (hidden first, comes in after delay seconds).
+ */
 function LoopText(chars1: HTMLSpanElement[], chars2: HTMLSpanElement[]) {
-  const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
-  const delay = 4;
-  const delay2 = delay * 2 + 1; // 9
+  const switchDelay = 4;   // seconds before first switch
+  const cycleGap   = 1;    // repeatDelay between cycles
 
-  tl
-    // At timeline position 0: bring chars2 in (after 4s), send chars1 out (after 4s)
-    .fromTo(
-      chars2,
-      { opacity: 0, y: 80 },
-      {
-        opacity: 1,
-        duration: 1.2,
-        ease: "power3.inOut",
-        y: 0,
-        stagger: 0.1,
-        delay: delay,
-      },
-      0
-    )
-    .fromTo(
-      chars1,
-      { y: 0 },
-      {
-        y: -80,
-        duration: 1.2,
-        ease: "power3.inOut",
-        stagger: 0.1,
-        delay: delay,
-      },
-      0
-    )
-    // At timeline position 1: bring chars1 back (after 9s), send chars2 out (after 9s)
-    .fromTo(
-      chars1,
-      { y: 80 },
-      {
-        duration: 1.2,
-        ease: "power3.inOut",
-        y: 0,
-        stagger: 0.1,
-        delay: delay2,
-      },
-      1
-    )
-    .to(
-      chars2,
-      {
-        y: -80,
-        duration: 1.2,
-        ease: "power3.inOut",
-        stagger: 0.1,
-        delay: delay2,
-      },
-      1
-    );
+  const tl = gsap.timeline({ repeat: -1, repeatDelay: cycleGap });
+
+  // Phase 1: chars1 exits ↑, chars2 enters ↑ (after switchDelay)
+  tl.to(chars1, {
+      y: -80,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power2.in",
+      stagger: 0.04,
+      delay: switchDelay,
+    }, 0)
+    .to(chars2, {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: "power2.out",
+      stagger: 0.04,
+      delay: switchDelay + 0.2,   // slight offset so it feels like a swap
+    }, 0)
+
+  // Phase 2: chars2 exits ↑, chars1 comes back ↑ (another switchDelay later)
+    .to(chars2, {
+      y: -80,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power2.in",
+      stagger: 0.04,
+      delay: switchDelay,
+    }, switchDelay + 1.5)   // start this phase after chars2 is fully in
+    .to(chars1, {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: "power2.out",
+      stagger: 0.04,
+      delay: switchDelay + 0.2,
+    }, switchDelay + 1.5)
+
+  // Reset positions for next cycle
+    .set(chars1, { y: 80, opacity: 0 }, 0)
+    .set(chars1, { y: 0, opacity: 1 }, "<+=0.9");
+
+  return tl;
 }

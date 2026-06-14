@@ -5,6 +5,7 @@
   place-items: center;
   justify-content: center;
   position: relative;
+  z-index: 15;
   opacity: 1;
   height: auto;
   margin: auto;
