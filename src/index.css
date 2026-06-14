@@ -32,7 +32,8 @@ h6 {
   font-family: "Geist", sans-serif;
 }
 body {
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 a {
   color: inherit;

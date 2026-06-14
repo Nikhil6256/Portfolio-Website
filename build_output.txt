@@ -1,0 +1,109 @@
+﻿[36mvite v5.4.4 [32mbuilding for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 152 modules transformed.
+node : [31mx[39m 
+Build failed in 2.00s
+At line:1 char:1
++ node node_modules/vit
+e/bin/vite.js build 
+2>&1 | Out-File 
+-FilePath bu ...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([31mx[39m B   
+ uild failed in 2.0    
+0s:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+[31merror during 
+build:
+[31m[commonjs--resolve
+r] Failed to resolve 
+entry for package 
+"hls.js". The package 
+may have incorrect 
+main/module/exports 
+specified in its 
+package.json.[31m
+    at 
+packageEntryFailure (fi
+le:///C:/Users/HP/Raj_F
+older/Web_D/Portfolio/P
+ortfolio-Website/node_m
+odules/vite/dist/node/c
+hunks/dep-BEhTnQAI.js:4
+6574:15)
+    at 
+resolvePackageEntry (fi
+le:///C:/Users/HP/Raj_F
+older/Web_D/Portfolio/P
+ortfolio-Website/node_m
+odules/vite/dist/node/c
+hunks/dep-BEhTnQAI.js:4
+6571:3)
+    at tryNodeResolve (
+file:///C:/Users/HP/Raj
+_Folder/Web_D/Portfolio
+/Portfolio-Website/node
+_modules/vite/dist/node
+/chunks/dep-BEhTnQAI.js
+:46387:16)
+    at 
+Object.resolveId (file:
+///C:/Users/HP/Raj_Fold
+er/Web_D/Portfolio/Port
+folio-Website/node_modu
+les/vite/dist/node/chun
+ks/dep-BEhTnQAI.js:4613
+7:19)
+    at file:///C:/Users
+/HP/Raj_Folder/Web_D/Po
+rtfolio/Portfolio-Websi
+te/node_modules/rollup/
+dist/es/shared/node-ent
+ry.js:19919:40
+    at async PluginDriv
+er.hookFirstAndGetPlugi
+n (file:///C:/Users/HP/
+Raj_Folder/Web_D/Portfo
+lio/Portfolio-Website/n
+ode_modules/rollup/dist
+/es/shared/node-entry.j
+s:19819:28)
+    at async resolveId 
+(file:///C:/Users/HP/Ra
+j_Folder/Web_D/Portfoli
+o/Portfolio-Website/nod
+e_modules/rollup/dist/e
+s/shared/node-entry.js:
+18510:26)
+    at async 
+ModuleLoader.resolveId 
+(file:///C:/Users/HP/Ra
+j_Folder/Web_D/Portfoli
+o/Portfolio-Website/nod
+e_modules/rollup/dist/e
+s/shared/node-entry.js:
+18913:15)
+    at async 
+Object.resolveId (file:
+///C:/Users/HP/Raj_Fold
+er/Web_D/Portfolio/Port
+folio-Website/node_modu
+les/vite/dist/node/chun
+ks/dep-BEhTnQAI.js:1283
+3:10)
+    at async PluginDriv
+er.hookFirstAndGetPlugi
+n (file:///C:/Users/HP/
+Raj_Folder/Web_D/Portfo
+lio/Portfolio-Website/n
+ode_modules/rollup/dist
+/es/shared/node-entry.j
+s:19819:28)[39m

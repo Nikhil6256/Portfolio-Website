@@ -1,26 +1,43 @@
-import { SplitText } from "gsap-trial/SplitText";
 import gsap from "gsap";
-import { smoother } from "../Navbar";
+
+// Custom char splitter — replaces gsap-trial/SplitText
+function splitChars(selectors: string[]): HTMLSpanElement[] {
+  const chars: HTMLSpanElement[] = [];
+  selectors.forEach((selector) => {
+    document.querySelectorAll<HTMLElement>(selector).forEach((el) => {
+      const text = el.innerText;
+      el.innerHTML = text
+        .split("")
+        .map((c) =>
+          c === " "
+            ? " "
+            : `<span class="split-char" style="display:inline-block;">${c}</span>`
+        )
+        .join("");
+      chars.push(...Array.from(el.querySelectorAll<HTMLSpanElement>(".split-char")));
+    });
+  });
+  return chars;
+}
 
 export function initialFX() {
   document.body.style.overflowY = "auto";
-  smoother.paused(false);
-  document.getElementsByTagName("main")[0].classList.add("main-active");
+  // No smoother.paused(false) needed — native scroll is always active
+  document.getElementsByTagName("main")[0]?.classList.add("main-active");
+
   gsap.to("body", {
     backgroundColor: "#0b080c",
     duration: 0.5,
     delay: 1,
   });
 
-  var landingText = new SplitText(
-    [".landing-info h3", ".landing-intro h2", ".landing-intro h1"],
-    {
-      type: "chars,lines",
-      linesClass: "split-line",
-    }
-  );
+  const landingChars = splitChars([
+    ".landing-info h3",
+    ".landing-intro h2",
+    ".landing-intro h1",
+  ]);
   gsap.fromTo(
-    landingText.chars,
+    landingChars,
     { opacity: 0, y: 80, filter: "blur(5px)" },
     {
       opacity: 1,
@@ -33,11 +50,9 @@ export function initialFX() {
     }
   );
 
-  let TextProps = { type: "chars,lines", linesClass: "split-h2" };
-
-  var landingText2 = new SplitText(".landing-h2-info", TextProps);
+  const landingInfo2Chars = splitChars([".landing-h2-info"]);
   gsap.fromTo(
-    landingText2.chars,
+    landingInfo2Chars,
     { opacity: 0, y: 80, filter: "blur(5px)" },
     {
       opacity: 1,
@@ -61,6 +76,7 @@ export function initialFX() {
       delay: 0.8,
     }
   );
+
   gsap.fromTo(
     [".header", ".icons-section", ".nav-fade"],
     { opacity: 0 },
@@ -72,21 +88,38 @@ export function initialFX() {
     }
   );
 
-  var landingText3 = new SplitText(".landing-h2-info-1", TextProps);
-  var landingText4 = new SplitText(".landing-h2-1", TextProps);
-  var landingText5 = new SplitText(".landing-h2-2", TextProps);
+  // Loop text animations for landing alternating text
+  const h2InfoChars = splitCharsForLoop(".landing-h2-info");
+  const h2Info1Chars = splitCharsForLoop(".landing-h2-info-1");
+  const h21Chars = splitCharsForLoop(".landing-h2-1");
+  const h22Chars = splitCharsForLoop(".landing-h2-2");
 
-  LoopText(landingText2, landingText3);
-  LoopText(landingText4, landingText5);
+  LoopText(h2InfoChars, h2Info1Chars);
+  LoopText(h21Chars, h22Chars);
 }
 
-function LoopText(Text1: SplitText, Text2: SplitText) {
-  var tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+function splitCharsForLoop(selector: string): HTMLSpanElement[] {
+  const el = document.querySelector<HTMLElement>(selector);
+  if (!el) return [];
+  const text = el.innerText;
+  el.innerHTML = text
+    .split("")
+    .map((c) =>
+      c === " "
+        ? " "
+        : `<span class="split-char" style="display:inline-block;">${c}</span>`
+    )
+    .join("");
+  return Array.from(el.querySelectorAll<HTMLSpanElement>(".split-char"));
+}
+
+function LoopText(chars1: HTMLSpanElement[], chars2: HTMLSpanElement[]) {
+  const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
   const delay = 4;
   const delay2 = delay * 2 + 1;
 
   tl.fromTo(
-    Text2.chars,
+    chars2,
     { opacity: 0, y: 80 },
     {
       opacity: 1,
@@ -99,7 +132,7 @@ function LoopText(Text1: SplitText, Text2: SplitText) {
     0
   )
     .fromTo(
-      Text1.chars,
+      chars1,
       { y: 80 },
       {
         duration: 1.2,
@@ -111,7 +144,7 @@ function LoopText(Text1: SplitText, Text2: SplitText) {
       1
     )
     .fromTo(
-      Text1.chars,
+      chars1,
       { y: 0 },
       {
         y: -80,
@@ -123,7 +156,7 @@ function LoopText(Text1: SplitText, Text2: SplitText) {
       0
     )
     .to(
-      Text2.chars,
+      chars2,
       {
         y: -80,
         duration: 1.2,

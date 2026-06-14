@@ -2,26 +2,22 @@ import { useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
-import { ScrollSmoother } from "gsap-trial/ScrollSmoother";
 import "./styles/Navbar.css";
 
-gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
-export let smoother: ScrollSmoother;
+gsap.registerPlugin(ScrollTrigger);
+
+// Native smooth scroll helper — replaces ScrollSmoother
+export const scrollTo = (selector: string) => {
+  const target = document.querySelector(selector);
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+};
 
 const Navbar = () => {
   useEffect(() => {
-    smoother = ScrollSmoother.create({
-      wrapper: "#smooth-wrapper",
-      content: "#smooth-content",
-      smooth: 1.7,
-      speed: 1.7,
-      effects: true,
-      autoResize: true,
-      ignoreMobileResize: true,
-    });
-
-    smoother.scrollTop(0);
-    smoother.paused(true);
+    // Scroll to top on load
+    window.scrollTo({ top: 0, behavior: "instant" });
 
     let links = document.querySelectorAll(".header ul a");
     links.forEach((elem) => {
@@ -29,16 +25,18 @@ const Navbar = () => {
       element.addEventListener("click", (e) => {
         if (window.innerWidth > 1024) {
           e.preventDefault();
-          let elem = e.currentTarget as HTMLAnchorElement;
-          let section = elem.getAttribute("data-href");
-          smoother.scrollTo(section, true, "top top");
+          let anchor = e.currentTarget as HTMLAnchorElement;
+          let section = anchor.getAttribute("data-href");
+          if (section) scrollTo(section);
         }
       });
     });
+
     window.addEventListener("resize", () => {
-      ScrollSmoother.refresh(true);
+      ScrollTrigger.refresh(true);
     });
   }, []);
+
   return (
     <>
       <div className="header">
@@ -46,7 +44,7 @@ const Navbar = () => {
           Logo
         </a>
         <a
-          href="mailto:example@mail.com"
+          href="mailto:nikhilpvchoudhary@gmail.com"
           className="navbar-connect"
           data-cursor="disable"
         >
